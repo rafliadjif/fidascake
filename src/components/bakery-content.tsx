@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ArrowRight, Clock3, Heart, Minus, Plus, ShoppingBag, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import storyImage from '@/assets/bread-3.jpg';
 export function OvenSchedule() {
  const [minutes, setMinutes] = useState<number | null>(null);
  // Time is read after hydration to avoid server/client timezone mismatches.
- useState(() => { if (typeof window !== 'undefined') setTimeout(() => setMinutes(getJakartaMinutes()), 0); });
+ useEffect(() => { setMinutes(getJakartaMinutes()); const timer = setInterval(() => setMinutes(getJakartaMinutes()), 60000); return () => clearInterval(timer); }, []);
  const morning = minutes !== null && minutes < 450;
  const afternoon = minutes !== null && minutes < 810;
  return <section className="oven-section"><div className="container oven-grid"><div className="oven-label"><span className="oven-label-icon"><Clock3 size={25}/></span><div><span className="eyebrow">SETIAP HARI</span><h2>Jadwal Keluar Oven</h2></div></div><div className="oven-slot"><div><strong>Batch Pagi</strong><p>Pesan sebelum 07.30</p><span className="oven-status">{morning ? 'Masih buka pesanan' : 'Pesanan ditutup'}</span></div><span className="oven-time">09.00</span></div><div className="oven-slot"><div><strong>Batch Sore</strong><p>Pesan sebelum 13.30</p><span className="oven-status">{afternoon ? 'Masih buka pesanan' : 'Pesanan ditutup'}</span></div><span className="oven-time">15.00</span></div></div></section>;

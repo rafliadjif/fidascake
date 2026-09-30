@@ -1,3 +1,3 @@
-- [ ] Build FIDA'S visual system and shared ordering shell.
-- [ ] Build home and six requested demo pages.
+- [x] Build FIDA'S visual system and shared ordering shell.
+- [x] Build home and six requested demo pages.
 - [ ] Verify ordering flow and responsive preview.

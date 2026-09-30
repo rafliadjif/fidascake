@@ -1,3 +1,6 @@
 - [x] Build FIDA'S visual system and shared ordering shell.
 - [x] Build home and six requested demo pages.
 - [x] Verify ordering flow and responsive preview.
+- [ ] Update daily bread, dessert, and custom cake catalog with requested prices and options.
+- [ ] Apply flat delivery fee, delivery minimum, and custom deposit messaging through cart and checkout.
+- [ ] Verify product selection, custom options, and delivery checkout on desktop/mobile.

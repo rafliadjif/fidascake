@@ -1,0 +1,3 @@
+- [x] Build FIDA'S visual system and shared ordering shell.
+- [x] Build home and six requested demo pages.
+- [x] Verify ordering flow and responsive preview.

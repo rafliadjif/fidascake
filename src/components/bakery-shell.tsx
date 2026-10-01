@@ -11,9 +11,10 @@ export function useBakery() { const value = useContext(BakeryContext); if (!valu
 export function BakeryProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orderType, setOrderType] = useState<OrderType>('ambil');
-  useEffect(() => { try { const saved = localStorage.getItem('fidas-cart'); if (saved) setCart(JSON.parse(saved)); const savedType = localStorage.getItem('fidas-order-type'); if (savedType === 'antar') setOrderType('antar'); } catch { /* demo remains usable */ } }, []);
-  useEffect(() => { localStorage.setItem('fidas-cart', JSON.stringify(cart)); }, [cart]);
-  useEffect(() => { localStorage.setItem('fidas-order-type', orderType); }, [orderType]);
+  const [ready, setReady] = useState(false);
+  useEffect(() => { try { const saved = localStorage.getItem('fidas-cart'); if (saved) setCart(JSON.parse(saved)); const savedType = localStorage.getItem('fidas-order-type'); if (savedType === 'antar') setOrderType('antar'); } catch { /* demo remains usable */ } setReady(true); }, []);
+  useEffect(() => { if (ready) localStorage.setItem('fidas-cart', JSON.stringify(cart)); }, [cart, ready]);
+  useEffect(() => { if (ready) localStorage.setItem('fidas-order-type', orderType); }, [orderType, ready]);
   const addItem = (item: Omit<CartItem, 'quantity'>) => setCart(current => { const existing = current.find(entry => entry.id === item.id && entry.note === item.note); return existing ? current.map(entry => entry === existing ? { ...entry, quantity: entry.quantity + 1 } : entry) : [...current, { ...item, quantity: 1 }]; });
   const changeQuantity = (id: string, amount: number) => setCart(current => current.map(item => item.id === id ? { ...item, quantity: item.quantity + amount } : item).filter(item => item.quantity > 0));
   const clearCart = () => setCart([]);

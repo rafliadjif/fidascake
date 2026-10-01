@@ -4,3 +4,4 @@
 - [ ] Update daily bread, dessert, and custom cake catalog with requested prices and options.
 - [ ] Apply flat delivery fee, delivery minimum, and custom deposit messaging through cart and checkout.
 - [ ] Verify product selection, custom options, and delivery checkout on desktop/mobile.
+- [ ] Automatically assign the next bread pickup batch: after 09.00 to 15.00, after 15.00 to tomorrow 09.00.

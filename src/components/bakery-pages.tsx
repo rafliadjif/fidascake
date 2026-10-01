@@ -45,7 +45,7 @@ export function CheckoutPage() {
  const customDates = cart.filter(item => item.custom && item.customDate).map(item => item.customDate ?? '');
  const hasBread = cart.some(item => ['sobek-cokelat', 'croissant', 'cinnamon-roll', 'gandum-tawar'].includes(item.id));
  const minimumDate = [todayJakarta(), ...(cart.some(item => item.custom) ? [tomorrow()] : []), ...(hasBread && nextBreadBatch ? [nextBreadBatch.date] : []), ...customDates].sort().at(-1) ?? todayJakarta();
- useEffect(() => { if (hasBread && nextBreadBatch && !date) { setDate(minimumDate); setBatch(nextBreadBatch.time); } }, [hasBread, nextBreadBatch, date, minimumDate]);
+ useEffect(() => { if (hasBread && nextBreadBatch && (!date || date < minimumDate)) { setDate(minimumDate); setBatch(minimumDate === nextBreadBatch.date ? nextBreadBatch.time : '09.00'); } }, [hasBread, nextBreadBatch, date, minimumDate]);
  const belowMinimum = orderType === 'antar' && subtotal < DELIVERY_MINIMUM;
  const customSubtotal = cart.filter(item => item.custom).reduce((sum, item) => sum + item.price * item.quantity, 0);
  function submit(e: FormEvent) {

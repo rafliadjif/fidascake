@@ -3,17 +3,16 @@ import { Link } from '@tanstack/react-router';
 import { ArrowRight, Clock3, Heart, Minus, Plus, ShoppingBag, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBakery } from '@/components/bakery-shell';
-import { CAKE_PRICES, DELIVERY_FEE, DELIVERY_MINIMUM, cakes, getJakartaMinutes, products, rupiah, type Product } from '@/lib/bakery';
+import { CAKE_PRICES, DELIVERY_FEE, DELIVERY_MINIMUM, cakes, getNextBreadBatch, products, rupiah, type Product } from '@/lib/bakery';
 import heroImage from '@/assets/hero-bread.jpg';
 import storyImage from '@/assets/bread-3.jpg';
 
 export function OvenSchedule() {
- const [minutes, setMinutes] = useState<number | null>(null);
+ const [next, setNext] = useState<ReturnType<typeof getNextBreadBatch> | null>(null);
  // Time is read after hydration to avoid server/client timezone mismatches.
- useEffect(() => { setMinutes(getJakartaMinutes()); const timer = setInterval(() => setMinutes(getJakartaMinutes()), 60000); return () => clearInterval(timer); }, []);
- const morning = minutes !== null && minutes < 450;
- const afternoon = minutes !== null && minutes < 810;
- return <section className="oven-section"><div className="container oven-grid"><div className="oven-label"><span className="oven-label-icon"><Clock3 size={25}/></span><div><span className="eyebrow">SETIAP HARI</span><h2>Jadwal Keluar Oven</h2></div></div><div className="oven-slot"><div><strong>Batch Pagi</strong><p>Pesan sebelum 07.30</p><span className="oven-status">{morning ? 'Masih buka pesanan' : 'Pesanan ditutup'}</span></div><span className="oven-time">09.00</span></div><div className="oven-slot"><div><strong>Batch Sore</strong><p>Pesan sebelum 13.30</p><span className="oven-status">{afternoon ? 'Masih buka pesanan' : 'Pesanan ditutup'}</span></div><span className="oven-time">15.00</span></div></div></section>;
+ useEffect(() => { setNext(getNextBreadBatch()); const timer = setInterval(() => setNext(getNextBreadBatch()), 60000); return () => clearInterval(timer); }, []);
+ const today = next ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()) : '';
+ return <section className="oven-section"><div className="container oven-grid"><div className="oven-label"><span className="oven-label-icon"><Clock3 size={25}/></span><div><span className="eyebrow">SETIAP HARI</span><h2>Jadwal Keluar Oven</h2><span className="oven-status">{next ? `Pesan sekarang: ${next.date === today ? 'hari ini' : 'besok'} ${next.time}` : 'Memuat jadwal'}</span></div></div><div className="oven-slot"><div><strong>Batch Pagi</strong><p>Siap diambil 09.00</p><span className="oven-status">{next?.time === '09.00' ? (next.date === today ? 'Pesanan untuk hari ini' : 'Pesanan untuk besok') : 'Berikutnya besok pagi'}</span></div><span className="oven-time">09.00</span></div><div className="oven-slot"><div><strong>Batch Sore</strong><p>Siap diambil 15.00</p><span className="oven-status">{next?.time === '15.00' ? 'Pesanan untuk sore ini' : 'Setelah pukul 09.00'}</span></div><span className="oven-time">15.00</span></div></div></section>;
 }
 export function ProductCard({ product }: { product: Product }) { const { addItem } = useBakery(); return <article className="product-card"><div className="product-image"><img src={product.image} alt={product.name} loading="lazy" width={700} height={700}/>{product.label && <span className="product-label">{product.label}</span>}</div><div className="product-body"><h3>{product.name}</h3><p>{product.description}</p><div className="product-bottom"><strong>{rupiah(product.price)}</strong><Button size="sm" onClick={() => addItem(product)}>+ Tambah</Button></div></div></article>; }
 export function CakeCards() { return <div className="cake-grid">{cakes.map(cake => <Link to="/kue-custom" key={cake.id} className="cake-card"><img src={cake.image} alt={cake.name} loading="lazy" width={500} height={800}/><div className="cake-card-info"><h3>{cake.name}</h3><span>Kue ultah mulai {rupiah(CAKE_PRICES['16 cm'])} →</span></div></Link>)}</div>; }

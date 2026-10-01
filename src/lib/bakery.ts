@@ -1,8 +1,6 @@
 import bread1 from '@/assets/bread-1.jpg';
-import bread2 from '@/assets/bread-2.jpg';
 import bread3 from '@/assets/bread-3.jpg';
 import bread4 from '@/assets/bread-4.jpg';
-import treat1 from '@/assets/treat-1.jpg';
 import treat2 from '@/assets/treat-2.jpg';
 import cake1 from '@/assets/cake-1.jpg';
 import cake2 from '@/assets/cake-2.jpg';
@@ -37,3 +35,12 @@ export const getJakartaMinutes = () => {
   const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
   return Number(parts.find(p => p.type === 'hour')?.value ?? 0) * 60 + Number(parts.find(p => p.type === 'minute')?.value ?? 0);
 };
+export function getNextBreadBatch(now = new Date()) {
+  const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).format(now);
+  const minutes = Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', hourCycle: 'h23' }).format(now)) * 60 + Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', minute: '2-digit' }).format(now));
+  if (minutes < 540) return { date, time: '09.00' as const };
+  if (minutes < 900) return { date, time: '15.00' as const };
+  const next = new Date(`${date}T12:00:00+07:00`);
+  next.setUTCDate(next.getUTCDate() + 1);
+  return { date: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).format(next), time: '09.00' as const };
+}
